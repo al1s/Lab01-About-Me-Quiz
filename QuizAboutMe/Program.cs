@@ -10,7 +10,11 @@ namespace QuizAboutMe
             QuizEngine();
         }
 
-        // Quiz questions with correct answers and expected answer type
+        // Quiz questions with correct answers and expected answer type.
+        // Format: 
+        //      required string Question
+        //      required string CheckType
+        //      string Correct answer
         static string[][] quizContent = new string[][]
         {
             new string[] {"Do you believe my full name is Aleksandr Vladimirovich?", "Boolean", "true" },
@@ -39,8 +43,9 @@ namespace QuizAboutMe
                         counter += HandleRangeAnswer(userInput);
                         break;
                 };
-            }            
-
+            }
+            Console.WriteLine($"Correct answers: {counter} of {quizContent.Length}");
+            Console.ReadLine();
         }
 
         // Filter user input for anything but letters and digits
@@ -82,7 +87,16 @@ namespace QuizAboutMe
 
         static int ConvertToInt(string str)
         {
-            return default(int);
+            int result = default(int);
+            try
+            {
+                result = Int32.Parse(str);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Numeric answer expected");
+            }
+            return result;
         }
 
         // Check whether the user answer matches with a correct answer
@@ -102,8 +116,9 @@ namespace QuizAboutMe
         // Check whether the user answer matches with a correct answer
         static int HandleRangeAnswer(string userAnswer)
         {
-            ConvertToInt(userAnswer);
-            return default(int);
+            Random rnd = new Random();
+            int rndNumber = rnd.Next(42 - 2, 42 + 3);
+            return ConvertToInt(userAnswer) == rndNumber ? 1 : 0;
         }
     }
 }
