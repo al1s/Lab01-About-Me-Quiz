@@ -9,6 +9,8 @@ namespace QuizAboutMe
         {
             QuizEngine();
         }
+
+        // Quiz questions with correct answers and expected answer type
         static string[][] quizContent = new string[][]
         {
             new string[] {"Do you believe my full name is Aleksandr Vladimirovich?", "Boolean", "true" },
@@ -17,6 +19,8 @@ namespace QuizAboutMe
             new string[] { "What country besides the USA and Russia I\'ve been?", "String", "Mongolia, Spain, China, Italy, France, Switzerland, Netherlands"},
             new string[] { "What is the meaning of life if it\'s filled with surprises?", "Range" }
         };
+
+        // Quiz manager
         static void QuizEngine()
         {
             int counter = default(int);
@@ -38,10 +42,14 @@ namespace QuizAboutMe
             }            
 
         }
+
+        // Filter user input for anything but letters and digits
         static string Sanitize(string input)
         {
             return input;
         }
+
+        // Prompt user with a question and an expected answer category
         static string GetUserAnswerTo(string question, string questionCategory)
         {
             string acceptableUserInput = string.Empty;
@@ -49,7 +57,7 @@ namespace QuizAboutMe
             switch (questionCategory)
             {
                 case "Boolean":
-                    acceptableUserInput = "[Y]es/[N]o, default - Yes: ";
+                    acceptableUserInput = "Expected [Y]es/[N]o, default - Yes: ";
                     break;
                 case "String":
                     acceptableUserInput = "Expected string: ";
@@ -63,26 +71,35 @@ namespace QuizAboutMe
             userInput = Sanitize(userInput);
             return userInput;
         }
+
+        // Convert user input into boolean
         static bool ConvertToBoolean(string str)
         {
             Regex regex = new Regex(@"^y", RegexOptions.IgnoreCase);
             bool value = regex.IsMatch(str == string.Empty ? "y" : str);
             return value;
         } 
+
         static int ConvertToInt(string str)
         {
             return default(int);
         }
+
+        // Check whether the user answer matches with a correct answer
         static int HandleBooleanAnswer(string userAnswer, bool correctAnswer)
         {
             return ConvertToBoolean(userAnswer) == correctAnswer ? 1 : 0;
         }
+
+        // Check whether the user answer matches with a correct answer
         static int HandleStringAnswer(string userAnswer, string correctAnswer)
         {
             Regex regex = new Regex($@".*{userAnswer}.*", RegexOptions.IgnoreCase);
             bool value = regex.IsMatch(correctAnswer);
             return value ? 1 : 0;
         }
+
+        // Check whether the user answer matches with a correct answer
         static int HandleRangeAnswer(string userAnswer)
         {
             ConvertToInt(userAnswer);
