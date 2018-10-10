@@ -75,12 +75,13 @@ namespace QuizAboutMe
         }
         static int HandleBooleanAnswer(string userAnswer, bool correctAnswer)
         {
-            if (ConvertToBoolean(userAnswer) == correctAnswer) return 1;
-            else return default(int);
+            return ConvertToBoolean(userAnswer) == correctAnswer ? 1 : 0;
         }
         static int HandleStringAnswer(string userAnswer, string correctAnswer)
         {
-            return default(int);
+            Regex regex = new Regex($@".*{userAnswer}.*", RegexOptions.IgnoreCase);
+            bool value = regex.IsMatch(correctAnswer);
+            return value ? 1 : 0;
         }
         static int HandleRangeAnswer(string userAnswer)
         {
