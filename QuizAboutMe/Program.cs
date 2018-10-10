@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace QuizAboutMe
 {
     class Program
     {
+        static void Main(string[] args)
+        {
+            QuizEngine();
+        }
         static string[][] quizContent = new string[][]
         {
             new string[] {"Do you believe my full name is Aleksandr Vladimirovich?", "Boolean", "true" },
@@ -14,38 +19,73 @@ namespace QuizAboutMe
         };
         static void QuizEngine()
         {
+            int counter = default(int);
             foreach (string[] quizElm in quizContent)
             {
-                string userInput = GetUserAnswerTo(quizElm[0]);
+                string userInput = GetUserAnswerTo(quizElm[0], quizElm[1]);
                 switch (quizElm[1])
                 {
-                case "Boolean":
-                    HandleBooleanAnswer(Convert.ToBoolean(quizElm[2]));
-                    break;
+                    case "Boolean":
+                        counter += HandleBooleanAnswer(userInput, Convert.ToBoolean(quizElm[2]));
+                        break;
+                    case "String":
+                        counter += HandleStringAnswer(userInput, quizElm[2]);
+                        break;
+                    case "Range":
+                        counter += HandleRangeAnswer(userInput);
+                        break;
                 };
             }            
 
         }
-        static string GetUserAnswerTo(string question)
+        static string Sanitize(string input)
         {
-            return string.Empty;
+            return input;
         }
-        static int HandleBooleanAnswer(bool correctAnswer)
+        static string GetUserAnswerTo(string question, string questionCategory)
+        {
+            string acceptableUserInput = string.Empty;
+            Console.WriteLine(question);
+            switch (questionCategory)
+            {
+                case "Boolean":
+                    acceptableUserInput = "[Y]es/[N]o, default - Yes: ";
+                    break;
+                case "String":
+                    acceptableUserInput = "Expected string: ";
+                    break;
+                case "Range":
+                    acceptableUserInput = "Expected number: ";
+                    break;
+            }
+            Console.Write(acceptableUserInput);
+            string userInput = Console.ReadLine();
+            userInput = Sanitize(userInput);
+            return userInput;
+        }
+        static bool ConvertToBoolean(string str)
+        {
+            Regex regex = new Regex(@"^y", RegexOptions.IgnoreCase);
+            bool value = regex.IsMatch(str == string.Empty ? "y" : str);
+            return value;
+        } 
+        static int ConvertToInt(string str)
         {
             return default(int);
         }
-        static int HandleStringAnswer(bool correctAnswer)
+        static int HandleBooleanAnswer(string userAnswer, bool correctAnswer)
+        {
+            if (ConvertToBoolean(userAnswer) == correctAnswer) return 1;
+            else return default(int);
+        }
+        static int HandleStringAnswer(string userAnswer, string correctAnswer)
         {
             return default(int);
         }
-        static int HandleRangeAnswer(bool correctAnswer)
+        static int HandleRangeAnswer(string userAnswer)
         {
+            ConvertToInt(userAnswer);
             return default(int);
-        }
-        static void Main(string[] args)
-        {
-            QuizEngine();
-            Console.WriteLine("Hello World!");
         }
     }
 }
