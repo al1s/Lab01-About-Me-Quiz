@@ -21,7 +21,7 @@ namespace QuizAboutMe
             new string[] {"I like motocycles. And all of those I had were - Harley-Davidson. Do you believe it?", "Boolean", "false"},
             new string[] {"I went to Tibet. And climbed Everest - the North Face of it.", "Boolean", "false"},
             new string[] { "What country besides the USA and Russia I\'ve been?", "String", "Mongolia, Spain, China, Italy, France, Switzerland, Netherlands"},
-            new string[] { "What is the meaning of life if it\'s filled with surprises?", "Range" }
+            new string[] { "What is the meaning of life if it\'s filled with surprises? (Guess the number between 40 and 44)", "Range" }
         };
 
         // Quiz manager
@@ -40,7 +40,15 @@ namespace QuizAboutMe
         // Filter user input for anything but letters and digits
         static string Sanitize(string input)
         {
-            return input;
+            Regex regex = new Regex(@"[^a-zA-Z0-9]", RegexOptions.IgnoreCase);
+            try
+            {
+                return regex.Replace(input, "");
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return string.Empty;
+            }
         }
 
         // Prompt user with a question and an expected answer category
@@ -88,6 +96,7 @@ namespace QuizAboutMe
             return result;
         }
 
+        // Dispatch user input to correct handler depending on question type
         static int UserInputHandler(string[] quizElm, string userInput)
         {
             int result = default(int);
@@ -116,7 +125,8 @@ namespace QuizAboutMe
         // Check whether the user answer matches with a correct answer
         static int HandleStringAnswer(string userAnswer, string correctAnswer)
         {
-            Regex regex = new Regex($@".*{userAnswer}.*", RegexOptions.IgnoreCase);
+            userAnswer = userAnswer == string.Empty ? "UNKNOWN" : userAnswer;
+            Regex regex = new Regex($@"\b{userAnswer}\b", RegexOptions.IgnoreCase);
             bool value = regex.IsMatch(correctAnswer);
             return value ? 1 : 0;
         }
