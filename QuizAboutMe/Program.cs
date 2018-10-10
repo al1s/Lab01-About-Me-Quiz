@@ -14,7 +14,7 @@ namespace QuizAboutMe
         // Format: 
         //      required string Question
         //      required string CheckType
-        //      string Correct answer
+        //      string Correct answer (it's optional for "Range" questions)
         static string[][] quizContent = new string[][]
         {
             new string[] {"Do you believe my full name is Aleksandr Vladimirovich?", "Boolean", "true" },
@@ -31,18 +31,7 @@ namespace QuizAboutMe
             foreach (string[] quizElm in quizContent)
             {
                 string userInput = GetUserAnswerTo(quizElm[0], quizElm[1]);
-                switch (quizElm[1])
-                {
-                    case "Boolean":
-                        counter += HandleBooleanAnswer(userInput, Convert.ToBoolean(quizElm[2]));
-                        break;
-                    case "String":
-                        counter += HandleStringAnswer(userInput, quizElm[2]);
-                        break;
-                    case "Range":
-                        counter += HandleRangeAnswer(userInput);
-                        break;
-                };
+                counter += UserInputHandler(quizElm, userInput);
             }
             Console.WriteLine($"Correct answers: {counter} of {quizContent.Length}");
             Console.ReadLine();
@@ -99,6 +88,25 @@ namespace QuizAboutMe
             return result;
         }
 
+        static int UserInputHandler(string[] quizElm, string userInput)
+        {
+            int result = default(int);
+            switch (quizElm[1])
+            {
+                case "Boolean":
+                    result = HandleBooleanAnswer(userInput, Convert.ToBoolean(quizElm[2]));
+                    break;
+                case "String":
+                    result = HandleStringAnswer(userInput, quizElm[2]);
+                    break;
+                case "Range":
+                    result = HandleRangeAnswer(userInput);
+                    break;
+            };
+            if (result == 1) Console.WriteLine("Correct answer!");
+            else Console.WriteLine("The answer is incorrect!");
+            return result;
+        }
         // Check whether the user answer matches with a correct answer
         static int HandleBooleanAnswer(string userAnswer, bool correctAnswer)
         {
